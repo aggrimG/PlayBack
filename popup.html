@@ -3,103 +3,78 @@
 <head>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      width: 280px;
-      margin: 0;
-      padding: 15px 20px;
-      font-family: 'Poppins', sans-serif;
-      background-color: #121212; 
-      color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    :root {
+      --bg-color: #121212; --text-color: #ffffff;
+      --slider-thumb: #00e5ff; --accent-text: #34cceb;
+      --track-bg: #333333; --input-bg: rgba(255, 255, 255, 0.05);
+      --glass-bg: rgba(25, 25, 25, 0.4); --glass-border: rgba(255, 255, 255, 0.05);
+      --glass-highlight: rgba(255, 255, 255, 0.15); --glass-shadow: rgba(0, 0, 0, 0.6);
     }
-
-    h3 {
-      margin: 0 0 15px 0;
-      font-size: 14px;
-      color: #aaaaaa;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+    [data-theme="light"] {
+      --bg-color: #f0f2f5; --text-color: #1a1a1a;
+      --track-bg: #d1d1d1; --input-bg: rgba(0, 0, 0, 0.05);
+      --glass-bg: rgba(255, 255, 255, 0.5); --glass-border: rgba(0, 0, 0, 0.1);
+      --glass-highlight: rgba(255, 255, 255, 0.9); --glass-shadow: rgba(0, 0, 0, 0.1);
     }
-
-    .controls-container {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      gap: 15px;
-    }
-
-    input[type=range] {
-      -webkit-appearance: none;
-      flex-grow: 1;
-      background: transparent;
-    }
-
-    input[type=range]::-webkit-slider-runnable-track {
-      width: 100%;
-      height: 6px;
-      cursor: pointer;
-      background: #333333;
-      border-radius: 5px;
-    }
-
-    input[type=range]::-webkit-slider-thumb {
-      height: 20px;
-      width: 20px;
-      border-radius: 50%;
-      background-color: #34cceb; 
-      cursor: pointer;
-      -webkit-appearance: none;
-      margin-top: -7px;
-      box-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
-      
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M8 5v14l11-7z"/></svg>');
-      background-size: 60%;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-
-    .input-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 3px;
-    }
-
-    #speedInput {
-      width: 50px;
-      background: #222222;
-      color: #00e5ff;
-      border: 1px solid #444444;
-      border-radius: 4px;
-      padding: 4px;
-      font-family: 'Poppins', sans-serif;
-      font-weight: 600;
-      font-size: 14px;
-      text-align: center;
-    }
-
-    #speedInput:focus {
-      outline: none;
-      border-color: #00e5ff;
-    }
-
-    .multiplier {
-      color: #777777;
-      font-weight: 600;
-    }
+    body { width: 280px; margin: 0; padding: 15px 20px; font-family: 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--text-color); transition: background-color 0.3s, color 0.3s; }
+    #main-screen, #settings-screen { display: flex; flex-direction: column; align-items: center; width: 100%; }
+    .hidden { display: none !important; }
+    .header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .icon-btn { background: none; border: none; cursor: pointer; color: var(--text-color); padding: 0; }
+    h3 { margin: 0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; }
+    .master-switch-container { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--glass-border); }
+    .switch-label { font-size: 13px; font-weight: 600; opacity: 0.9; }
+    .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider-toggle { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--track-bg); transition: .3s; border-radius: 24px; }
+    .slider-toggle:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .3s; border-radius: 50%; }
+    input:checked + .slider-toggle { background-color: var(--slider-thumb); box-shadow: 0 0 10px rgba(0, 229, 255, 0.4); }
+    input:checked + .slider-toggle:before { transform: translateX(20px); }
+    .domain-display { width: 100%; text-align: center; font-size: 11px; color: var(--accent-text); margin-bottom: 10px; opacity: 0.8; }
+    .controls-container { display: flex; align-items: center; width: 100%; gap: 15px; margin-bottom: 20px; }
+    input[type=range] { -webkit-appearance: none; flex-grow: 1; background: transparent; }
+    input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: var(--track-bg); border-radius: 5px; }
+    input[type=range]::-webkit-slider-thumb { height: 20px; width: 20px; border-radius: 50%; background-color: var(--slider-thumb); cursor: pointer; -webkit-appearance: none; margin-top: -7px; box-shadow: 0 0 10px rgba(0, 229, 255, 0.5); background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M8 5v14l11-7z"/></svg>'); background-size: 60%; background-position: center; background-repeat: no-repeat; }
+    .input-wrapper { display: flex; align-items: center; gap: 3px; color: var(--accent-text); font-weight: 600; }
+    #speedInput { width: 45px; background: var(--input-bg); color: var(--accent-text); border: 1px solid var(--glass-border); border-radius: 4px; padding: 4px; font-family: 'Poppins', sans-serif; font-weight: 600; text-align: center; }
+    .presets-container { display: flex; justify-content: space-between; width: 100%; gap: 6px; }
+    .preset-btn, .action-btn { flex: 1; background: var(--glass-bg); color: var(--text-color); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-top: 1px solid var(--glass-highlight); border-left: 1px solid var(--glass-highlight); border-radius: 8px; padding: 8px 0; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 13px; cursor: pointer; box-shadow: 0 4px 12px var(--glass-shadow); transition: all 0.1s ease; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+    .preset-btn:active, .action-btn:active { transform: translateY(2px); box-shadow: 0 1px 3px var(--glass-shadow); border-top: 1px solid var(--glass-border); }
+    .setting-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 15px; font-size: 13px; }
+    .settings-input { background: var(--input-bg); color: var(--text-color); border: 1px solid var(--glass-border); text-align: center; border-radius: 4px; padding: 4px; font-family: 'Poppins', sans-serif; }
+    .hotkey-display { width: 100%; text-align: center; font-size: 12px; color: var(--accent-text); font-weight: 600; background: var(--input-bg); padding: 8px 0; border-radius: 6px; margin-bottom: 10px; border: 1px solid var(--glass-border); }
   </style>
 </head>
 <body>
-  <h3>Playback Speed</h3>
-  
-  <div class="controls-container">
-    <input type="range" id="speedSlider" min="0.1" max="5" step="0.1" value="1.0">
-    
-    <div class="input-wrapper">
-      <input type="number" id="speedInput" min="0.1" max="16" step="0.1" value="1.0">
-      <span class="multiplier">x</span>
+  <div id="main-screen">
+    <div class="header">
+      <button class="icon-btn" id="open-settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
+      <h3>PlayBack+</h3>
+      <div style="width:20px;"></div>
     </div>
+    <div class="master-switch-container"><span class="switch-label">Extension Enabled</span><label class="switch"><input type="checkbox" id="master-toggle"><span class="slider-toggle"></span></label></div>
+    <div class="domain-display" id="domain-label">Loading domain...</div>
+    <div class="controls-container">
+      <input type="range" id="speedSlider" min="0.1" max="5" step="0.1" value="1.0">
+      <div class="input-wrapper"><input type="number" id="speedInput" step="0.1"><span>x</span></div>
+    </div>
+    <div class="presets-container" id="preset-buttons"></div>
+  </div>
+
+  <div id="settings-screen" class="hidden">
+    <div class="header">
+      <button class="icon-btn" id="close-settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button>
+      <h3>Settings</h3>
+      <div style="width:20px;"></div>
+    </div>
+    <div class="setting-row"><span>Light Mode</span><input type="checkbox" id="theme-toggle" style="accent-color: var(--slider-thumb);"></div>
+    <div class="setting-row"><span>Speeds</span><div id="preset-inputs" style="display: flex; gap: 4px;"></div></div>
+    <div style="width: 100%; border-top: 1px solid var(--glass-border); margin: 5px 0 15px 0;"></div>
+    <div class="hotkey-display" id="current-hotkey">Shift + S + ArrowUp / ArrowDown</div>
+    <div class="setting-row"><span>Modifier Key</span><input type="text" class="settings-input" id="hk-mod" style="width: 40px;" maxlength="1"></div>
+    <div class="setting-row"><span>Speed Up Key</span><input type="text" class="settings-input" id="hk-up" style="width: 80px;"></div>
+    <div class="setting-row"><span>Speed Down Key</span><input type="text" class="settings-input" id="hk-down" style="width: 80px;"></div>
+    <button class="action-btn" id="save-settings" style="width: 100%; margin-top: 5px;">Save Settings</button>
   </div>
 
   <script src="popup.js"></script>
